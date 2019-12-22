@@ -5,7 +5,8 @@ You Need to install 4-5 programs before you are able to run this script.
 2. PIP - if using python 3.4 pip should already be installed you can verify by typing "pip -V" into cmd prompt.
 3. Pandas - goto cmd prompt type in: "pip install pandas" without quotes.
 4. SQlite3 - necessary to create and operate on tabular data, and perform SQL like queries on data.
-5. Sublime Text - optional but makes editing and running scripts easier and may alleviate errors with file permissions.
+5. openpyxl - goto cmd prompt type in: "pip install openpyxl" without quotes.
+6. Sublime Text - optional but makes editing and running scripts easier and may alleviate errors with file permissions.
 '''
 
 import sqlite3
@@ -13,9 +14,16 @@ from datetime import datetime
 from dateutil.parser import parse
 import pandas as pd
 from pandas import DataFrame
+import tkinter as tk
+from tkinter import simpledialog
+import re
+from openpyxl import load_workbook
 #import sys
 #from xlutils.copy import copy
 #from xlrd import open_workbook
+
+
+USER_INP = ""
 
 
 conn = None;
@@ -55,43 +63,36 @@ read_drivers.to_sql('DRIVERS', conn, if_exists='replace', index = False) # Inser
 
 
 def export_to_sheets():
-	# open the file you're interested
-	rb = open_workbook('some_document.xlsx')
-
-	# copy it to a writable variant
-	wb = copy(rb)
-
-	# find the index of a sheet you wanna rename,
-	# let's say you wanna rename Sheet1
-	idx = rb.sheet_names().index('Sheet1')
-
-	# now rename the sheet in the writable copy
-	wb.get_sheet(idx).name = u'Renamed Sheet1'
-
-	# save the new spreadsheet
+	# set file path
+	#filepath="/home/ubuntu/demo.xlsx"
+	# load demo.xlsx 
+	wb=load_workbook('template_settlement.xlsx')
+	# get Sheet
+	source=wb['Sheet1']
+	# copy sheet
+	#target=wb.copy_worksheet(source)
+	# save workbook
 	wb.save('new_some_document.xlsx')
-
 	# done
+	return
 
-
+#######################################################################################
+# get_date_range():                                                                   #
+# Function to prompt user for required date range to append it to output files as     #
+# required.                                                                           #
+#######################################################################################
 def get_date_range():
-	c.execute('''
-		SELECT [Placed date (YYYY-MM-DD)]
-		FROM DRIVERS WHERE DRIVERS.[Outcome] == \'accepted\' AND DRIVERS.[Placed date (YYYY-MM-DD)] != ''
-		GROUP by [Placed date (YYYY-MM-DD)]
-			 ''')
-	test = c.fetchall()
-	for mo in test:
-		date3 = datetime.strptime(str(mo[0]), '%d-%m-%Y')
-		print(date3.strftime("%b %d, %Y"))
-		date_start = date3.strftime("%d")
-		print(date_start)
-
+	ROOT = tk.Tk()
+	ROOT.withdraw()
+	global USER_INP
+	USER_INP = simpledialog.askstring(title="Date Range",
+                                  	  prompt="Input the date range to append to the end of each file name:\"Aug 12 - Aug 21 2019\"")
+	USER_INP = re.sub('[^A-Za-z0-9\\-]+', '', USER_INP)
 	return
 
 #######################################################################################
 # total_sales(name):                                                                  #
-# Function to pull required data from created SQL database, and store it in the newly #                                                                                      #
+# Function to pull required data from created SQL database, and store it in the newly #
 # created table.                                                                      #
 #######################################################################################
 def total_sales(name):
@@ -211,6 +212,9 @@ c.execute('''
 df = DataFrame(c.fetchall(), columns=['Source.Name', 'Subtotal', 'Pickup Total', 'Delivery Total (Debit)', 'Delivery Total (Cash)', 'Delivery Fee (Debit)', 'Delivery Fee (Cash)'])
 print (df) 
 
+
+#get_date_range()
+export_to_sheets()
 #df.to_sql('DRIVERS', conn, if_exists='append', index = False) # Insert the values from the INSERT QUERY into the table 'DAILY_STATUS'
 
 try:
