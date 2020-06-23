@@ -11,7 +11,6 @@ You Need to install 4-5 programs before you are able to run this script.
 '''
 
 import sqlite3
-#from dateutil.parser import parse
 import pandas as pd
 from pandas import DataFrame
 import tkinter as tk
@@ -36,7 +35,6 @@ conn = None;
 try:
     conn = sqlite3.connect(':memory:') # This allows the database to run in RAM, with no requirement to create a file.
     #conn = sqlite3.connect('dash_delivers.db')  # You can create a new database by changing the name within the quotes.
-    #print(sqlite3.version)
 except Error as e:
     print(e)
 
@@ -266,8 +264,8 @@ def calendar_gui():
 
 #######################################################################################
 # set_template_date():                                                                #
-# Function to change the dates of the "_Driver Template.xlsx" template excel sheet and#
-# save as a new dated template to be reused by program to create additional           #
+# Function to change the dates of the "template_settlement.xlsx" template excel sheet #
+# and save as a new dated template to be reused by program to create additional       #
 # required.                                                                           #
 #######################################################################################
 def set_template_date():
