@@ -137,7 +137,7 @@ def export_to_sheets(name, total, pickup_online, pickup_instore, pickup_online_t
     wb.save(PATH + '\\' + str(name) + FOLDER_DATE.strftime(" %b %d, %Y") + '.xlsx')
     #wb.save(PATH + '\\' + str(driver_name) + datetime.now().strftime(" %b %d, %Y") + '.xlsx')
   except:
-    print("unable to save output sheet of driver: " + str(name))
+    print("unable to save output sheet of restaurant: " + str(name))
     return
   
   # done
